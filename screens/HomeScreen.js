@@ -1,32 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button, Vibration } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { Audio } from 'expo-av';
+import { HabitContext } from '../components/HabitContext';
 
-const mockHabits = [
-  { id: '1', nome: 'Beber água', concluido: false },
-  { id: '2', nome: 'Estudar 1h', concluido: false },
-  { id: '3', nome: 'Fazer exercício', concluido: false },
-  { id: '4', nome: 'Ler 10 páginas', concluido: false },
+const frases = [
+  "Você é mais forte do que imagina!",
+  "Cada hábito conta!",
+  "Pequenos passos geram grandes mudanças.",
+  "Confie no processo.",
+  "A sua consistência define o seu sucesso."
+];
+
+const imagens = [
+  require('../assets/sol.png'),
+  require('../assets/montanha.png'),
+  require('../assets/lago.png'),
+  require('../assets/floresta.png'),
+  require('../assets/lua.png')
 ];
 
 export default function HomeScreen() {
-  const [habitos, setHabitos] = useState(mockHabits);
-
-  const toggleHabito = (id) => {
-    const novosHabitos = habitos.map((h) =>
-      h.id === id ? { ...h, concluido: !h.concluido } : h
-    );
-    setHabitos(novosHabitos);
-  };
-
-  const habitosConcluidos = habitos.filter((h) => h.concluido).length;
-  const progresso = (habitosConcluidos / habitos.length) * 100;
-
-  const fraseMotivacional = () => {
-    if (progresso === 0) return 'Vamos começar!';
-    if (progresso < 50) return 'Você está indo bem!';
-    if (progresso < 100) return 'Quase lá!';
-    return 'Parabéns! Você concluiu tudo! 🎉';
-  };
+  const { habit, toggleHabitDone, registerHistory, removeCompletedHabits } = useContext(HabitContext);
+  const [fraseAtual, setFraseAtual] = useState('');
+  const [imagemAtual, setImagemAtual] = useState(null);
 
   const dataHoje = new Date().toLocaleDateString('pt-BR', {
     weekday: 'long',
@@ -34,58 +31,80 @@ export default function HomeScreen() {
     month: 'long',
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      const novaFrase = frases[Math.floor(Math.random() * frases.length)];
+      const novaImagem = imagens[Math.floor(Math.random() * imagens.length)];
+      setFraseAtual(novaFrase);
+      setImagemAtual(novaImagem);
+    }, [])
+  );
+
+  const handleMarcar = (id, name) => {
+    toggleHabitDone(id);
+    registerHistory(`Você marcou: ${name}`);
+  };
+
+const handleConcluir = async () => {
+  const concluidos = habit.filter(h => h.done);
+
+  if (concluidos.length > 0) {
+    const nomes = concluidos.map(h => h.name).join(', ');
+    registerHistory(`Você concluiu: ${nomes}`);
+  }
+
+  removeCompletedHabits();
+  Vibration.vibrate();
+
+  const { sound } = await Audio.Sound.createAsync(
+    require('../assets/sucesso.mp3')
+  );
+  await sound.playAsync();
+};
+  const algumMarcado = habit.some(h => h.done);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>{dataHoje.charAt(0).toUpperCase() + dataHoje.slice(1)}</Text>
-      
-      <FlatList
-        data={habitos}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.habitoItem, item.concluido && styles.habitoConcluido]}
-            onPress={() => toggleHabito(item.id)}
-          >
-            <Text style={styles.habitoTexto}>
-              {item.concluido ? '✅' : '⬜️'} {item.nome}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
+      {imagemAtual && (
+        <Image source={imagemAtual} style={styles.imagem} />
+      )}
 
-      <View style={styles.progresso}>
-        <Text>Progresso: {progresso.toFixed(0)}%</Text>
-      </View>
+      <Text style={styles.frase}>{fraseAtual}</Text>
 
-      <Text style={styles.frase}>{fraseMotivacional()}</Text>
+      <Text style={styles.titulo}>
+        {dataHoje.charAt(0).toUpperCase() + dataHoje.slice(1)}
+      </Text>
+
+      {habit.map((item) => (
+        <TouchableOpacity
+          key={item.id}
+          style={[styles.habitoItem, item.done && styles.habitoConcluido]}
+          onPress={() => handleMarcar(item.id, item.name)}
+        >
+          <Text style={styles.habitoTexto}>
+            {item.done ? '✅' : '⬜️'} {item.name}
+          </Text>
+        </TouchableOpacity>
+      ))}
+
+      {algumMarcado && (
+        <Button title="Concluir" onPress={handleConcluir} />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  imagem: { width: 150, height: 150, alignSelf: 'center', marginBottom: 10 },
+  frase: { fontStyle: 'italic', fontSize: 16, color: '#555', textAlign: 'center', marginBottom: 20 },
   titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
   habitoItem: {
     backgroundColor: '#E8F0FE',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
-  habitoConcluido: {
-    backgroundColor: '#D4EDDA',
-  },
-  habitoTexto: {
-    fontSize: 16,
-  },
-  progresso: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  frase: {
-    marginTop: 10,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#555',
-  },
+  habitoConcluido: { backgroundColor: '#D4EDDA' },
+  habitoTexto: { fontSize: 16 }
 });
