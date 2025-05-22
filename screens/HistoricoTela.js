@@ -2,17 +2,16 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { HabitContext } from '../components/ContextoHabito';
 
-
-export default function HistoryScreen() {
+export default function TelaHistorico() {
   const { historico } = useContext(HabitContext);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Histórico</Text>
+    <View style={estilos.container}>
+      <Text style={estilos.titulo}>Histórico</Text>
       <ScrollView>
-        {historico.map((item, index) => (
-          <Text key={index} style={styles.item}>
-            {item.text}
+        {historico && historico.map((item, indice) => (
+          <Text key={indice} style={estilos.item}>
+            {item.texto}
           </Text>
         ))}
       </ScrollView>
@@ -20,7 +19,7 @@ export default function HistoryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
