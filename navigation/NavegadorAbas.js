@@ -3,15 +3,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import TelaInicial from '../screens/TelaInicial';
-import AdicionarHabitoTela from '../screens/AdicionarHabitoTela';
-import HistoricoTela from '../screens/HistoricoTela';
-import PerfilTela from '../screens/PerfilTela';
+import TelaAdicionarHabito from '../screens/AdicionarHabitoTela';
+import TelaHistorico from '../screens/HistoricoTela';
+import TelaPerfil from '../screens/PerfilTela';
 
-const Tab = createBottomTabNavigator();
+const Abas = createBottomTabNavigator();
 
 export default function NavegadorAbas() {
   return (
-    <Tab.Navigator
+    <Abas.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           if (route.name === 'Início') {
@@ -29,10 +29,10 @@ export default function NavegadorAbas() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Início" component={TelaInicial} />
-      <Tab.Screen name="Hábito" component={AdicionarHabitoTela} />
-      <Tab.Screen name="Histórico" component={HistoricoTela} />
-      <Tab.Screen name="Perfil" component={PerfilTela} />
-    </Tab.Navigator>
+      <Abas.Screen name="Início" component={TelaInicial} />
+      <Abas.Screen name="Hábito" component={TelaAdicionarHabito} />
+      <Abas.Screen name="Histórico" component={TelaHistorico} />
+      <Abas.Screen name="Perfil" component={TelaPerfil} />
+    </Abas.Navigator>
   );
 }
