@@ -21,27 +21,17 @@ export const HabitProvider = ({ children }) => {
 
     habitosRef.on('value', snap => {
       const data = snap.val();
-      if (data) {
-        setHabits(Object.values(data));
-      } else {
-        setHabits([]);
-      }
+      setHabits(Object.values(data || {}));
     });
 
     historicoRef.on('value', snap => {
       const data = snap.val();
-      if (data) {
-        setHistory(Object.values(data));
-      } else {
-        setHistory([]);
-      }
+      setHistory(Object.values(data || {}));
     });
 
     perfilRef.on('value', snap => {
       const data = snap.val();
-      if (data) {
-        setProfile(data);
-      }
+      setProfile(data || {});
     });
 
     return () => {
@@ -51,8 +41,8 @@ export const HabitProvider = ({ children }) => {
     };
   }, []);
 
-  const addHistory = (text) => {
-    database.ref('historico/' + userId).push({ text: text });
+  const addHistory = (texto) => {
+    database.ref('historico/' + userId).push({ texto });
   };
 
   const adicionarHabito = (nome) => {
@@ -64,7 +54,7 @@ export const HabitProvider = ({ children }) => {
   const excluirHabito = (id) => {
     const habit = habitos.find(h => h.id === id);
     database.ref('habitos/' + userId + '/' + id).remove();
-    addHistory('Removeu: ' + habit.nome);
+    addHistory('Removeu hábito: ' + habit.nome);
   };
 
   const alternarHabito = (id) => {
