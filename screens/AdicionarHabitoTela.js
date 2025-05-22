@@ -2,42 +2,42 @@ import React, { useContext, useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { HabitContext } from '../components/ContextoHabito';
 
-export default function AddHabitScreen() {
+export default function TelaAdicionarHabito() {
   const { habitos, adicionarHabito, excluirHabito } = useContext(HabitContext);
   const [novoHabito, setNovoHabito] = useState('');
 
-  const handleAdicionar = () => {
+  const aoAdicionar = () => {
     adicionarHabito(novoHabito);
     setNovoHabito('');
   };
 
-  const handleExcluir = (id) => {
+  const aoExcluir = (id) => {
     excluirHabito(id);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Adicionar Hábito</Text>
+    <View style={estilos.container}>
+      <Text style={estilos.titulo}>Adicionar Hábito</Text>
 
       <TextInput
         placeholder="Novo hábito"
         value={novoHabito}
         onChangeText={setNovoHabito}
-        style={styles.input}
+        style={estilos.input}
       />
 
-      <Button title="Adicionar" onPress={handleAdicionar} />
+      <Button title="Adicionar" onPress={aoAdicionar} />
 
-      <Text style={styles.subtitulo}>Meus Hábitos</Text>
+      <Text style={estilos.subtitulo}>Meus Hábitos</Text>
 
       {habitos.map((item) => (
-        <View key={item.id} style={styles.habitoItem}>
-          <Text style={styles.habitoTexto}>{item.nome}</Text>
+        <View key={item.id} style={estilos.itemHabito}>
+          <Text style={estilos.textoHabito}>{item.nome}</Text>
           <TouchableOpacity
-            style={styles.botaoExcluir}
-            onPress={() => handleExcluir(item.id)}
+            style={estilos.botaoExcluir}
+            onPress={() => aoExcluir(item.id)}
           >
-            <Text style={styles.textoExcluir}>Excluir</Text>
+            <Text style={estilos.textoExcluir}>Excluir</Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -45,7 +45,7 @@ export default function AddHabitScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20
   },
-  habitoItem: {
+  itemHabito: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10
   },
-  habitoTexto: {
+  textoHabito: {
     fontSize: 16
   },
   botaoExcluir: {
