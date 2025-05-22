@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Button } from 'react-native';
 import { HabitContext } from '../components/ContextoHabito';
 
-export default function ProfileScreen() {
+export default function TelaPerfil() {
   const { habitos, historico, perfil, atualizarPerfil } = useContext(HabitContext);
 
   const [novoNome, setNovoNome] = useState(perfil.nome);
@@ -22,54 +22,54 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require('../assets/montanha.png')} style={styles.avatar} />
+    <View style={estilos.container}>
+      <Image source={require('../assets/montanha.png')} style={estilos.avatar} />
 
-      <Text style={styles.titulo}>{perfil.nome}</Text>
+      <Text style={estilos.titulo}>{perfil.nome}</Text>
 
-      <Text style={styles.info}>✅ Total de hábitos: {habitos.length}</Text>
-      <Text style={styles.info}>📝 Ações no histórico: {historico.length}</Text>
-      <Text style={styles.info}>🎯 Meta: {perfil.meta}</Text>
-      <Text style={styles.info}>👤 Idade: {perfil.idade}</Text>
+      <Text style={estilos.info}>✅ Total de hábitos: {habitos.length}</Text>
+      <Text style={estilos.info}>📝 Ações no histórico: {historico.length}</Text>
+      <Text style={estilos.info}>🎯 Meta: {perfil.meta}</Text>
+      <Text style={estilos.info}>👤 Idade: {perfil.idade}</Text>
 
-      <View style={styles.inputContainer}>
+      <View style={estilos.containerInput}>
         <Text>Meta:</Text>
         <TextInput
           value={novaMeta}
           onChangeText={setNovaMeta}
-          style={styles.input}
+          style={estilos.input}
         />
 
         <Text>Idade:</Text>
         <TextInput
           value={novaIdade}
           onChangeText={setNovaIdade}
-          style={styles.input}
+          style={estilos.input}
         />
 
         <Text>Nome:</Text>
         <TextInput
           value={novoNome}
           onChangeText={setNovoNome}
-          style={styles.input}
+          style={estilos.input}
         />
       </View>
 
       <Button title="OK" onPress={confirmarEdicao} />
 
-      <Text style={styles.mensagem}>
+      <Text style={estilos.mensagem}>
         Continue assim! Você está criando bons hábitos!
       </Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', paddingTop: 60, paddingHorizontal: 20, backgroundColor: '#fff' },
   avatar: { width: 120, height: 120, borderRadius: 60, marginBottom: 20 },
   titulo: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
   info: { fontSize: 16, marginBottom: 10, textAlign: 'center' },
-  inputContainer: { marginTop: 20, width: '80%' },
+  containerInput: { marginTop: 20, width: '80%' },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 10, padding: 10, marginBottom: 10 },
   mensagem: { fontStyle: 'italic', color: '#555', marginTop: 20, textAlign: 'center' },
 });
